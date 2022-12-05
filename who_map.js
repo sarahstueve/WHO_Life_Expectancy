@@ -10,6 +10,7 @@ window.addEventListener('load', async function() {
     await selectGeoFile(year);
     // populate select
     populateSelect(data);
+    loadButtons();
     setScale(selectedVar);
     map = L.map("map").setView([51.505, -0.09], 1);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -33,8 +34,51 @@ let drawMap = function() {
                 color: colorScale(feature.properties[selectedVar]),
             };
         },
+        onEachFeature: onEachFeature
     }).addTo(map);
+
 }
+
+// Functions referenced from leaflet tutorial:
+// https://leafletjs.com/examples/choropleth/
+
+let highlightFeature = function(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#bcbcbc',
+        dashArray: '',
+        fillOpacity: 0.5
+    });
+
+    layer.bringToFront();
+
+    let props = e.target.feature.properties;
+    let prop_name= selectedVar.replace("_", " ")
+    layer.bindPopup("<b>" + props.ADMIN + "</b><br/>" +
+                     prop_name + ": " + props[selectedVar]).openPopup();
+}
+
+let resetHighlight = function(e) {
+    lastGeoLayer.resetStyle(e.target);
+}
+
+let zoomToFeature = function(e) {
+    map.fitBounds(e.target.getBounds());
+}
+
+let onEachFeature = function(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature,
+    });
+    
+}
+//////////////////////////////////////////////
+
+
 
 let setScale = function(selectVar) {
     console.log(data)
@@ -73,12 +117,16 @@ let populateSelect = function(data) {
     select.node().onchange = setSelectedVar;
 }
 
-// this is where you would do the button loading
-// in this function do for loop 
-// for (let i =0 ;i < 20 ;i++)
-// use number in text of button, but also as the value
-// set the .onclick function to be setSelected year
-// use d3 to append the button to the #year footer
+let loadButtons = function() {
+    let select = d3.select('#year-footer')
+    for (let i = 0; i < 16; i++) {
+        select.append("button")
+            .text(2000 + i)
+            .attr("value", 2000 + i);
+
+    }
+    select.node().onclick = setSelectedYear;
+}
 
 let setSelectedVar = function(e) {
     selectedVar = e.target.value;
