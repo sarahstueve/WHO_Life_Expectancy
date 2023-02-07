@@ -1,9 +1,16 @@
+import {Legend} from "./legend.js";
+
 let data;
 let colorScale;
 let lastGeoLayer;
 let selectedVar = "status";
 let year = 2000;
 let map;
+// var Legend;
+
+window.addEventListener('load', function() {
+    console.log("here!")
+})
 
 window.addEventListener('load', async function() {
     // set select values using 2000 as initial year
@@ -12,6 +19,7 @@ window.addEventListener('load', async function() {
     populateSelect(data);
     loadButtons();
     setScale(selectedVar);
+    updateLegend();
     map = L.map("map").setView([51.505, -0.09], 1);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
@@ -36,7 +44,7 @@ let drawMap = function() {
         },
         onEachFeature: onEachFeature
     }).addTo(map);
-
+    // Legend(colorScale(feature.properties[selectedVar])).addTo(d3.select("body"));
 }
 
 // Functions referenced from leaflet tutorial:
@@ -75,6 +83,18 @@ let onEachFeature = function(feature, layer) {
         click: zoomToFeature,
     });
     
+}
+
+let updateLegend = function() {
+    // if (Legend != undefined) {
+    let legend = Legend(colorScale, d3.interpolateInferno);
+    let legendDiv = d3.select("#legend");
+    let child = legendDiv.select("svg");
+    child.remove();
+    legendDiv.node().append(legend);
+    // }else{
+    //     console.log("wait");
+    // }
 }
 //////////////////////////////////////////////
 
