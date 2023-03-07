@@ -107,10 +107,11 @@ let setScale = function(selectVar) {
     }else{
         let temp = d3.scaleLinear()
                 .domain(d3.extent(varData))
-                .range([0, 1]);
-        colorScale = function(num) {
-            return d3.interpolateInferno(temp(num));
-        }
+                .range(['teal', 'purple']);
+        // colorScale = function(num) {
+        //     return d3.interpolateInferno(temp(num));
+        // }
+        colorScale = temp;
     }
 }
 
