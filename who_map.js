@@ -6,11 +6,6 @@ let lastGeoLayer;
 let selectedVar = "status";
 let year = 2000;
 let map;
-// var Legend;
-
-window.addEventListener('load', function() {
-    console.log("here!")
-})
 
 window.addEventListener('load', async function() {
     // set select values using 2000 as initial year
@@ -90,7 +85,9 @@ let updateLegend = function() {
     let legend = Legend(colorScale, d3.interpolateInferno);
     let legendDiv = d3.select("#legend");
     let child = legendDiv.select("svg");
-    child.remove();
+    if (child) {
+        child.remove();
+    }
     legendDiv.node().append(legend);
     // }else{
     //     console.log("wait");
@@ -152,12 +149,14 @@ let setSelectedVar = function(e) {
     selectedVar = e.target.value;
     setScale(selectedVar);
     drawMap();
+    updateLegend();
 }
 
 let setSelectedYear = function(e) {
     year = e.target.value;
     selectGeoFile(year);
     drawMap();
+    updateLegend();
 }
 
 let selectGeoFile = async function(year) {
