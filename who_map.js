@@ -105,13 +105,23 @@ let setScale = function(selectVar) {
             .domain(varData)
             .range(d3.schemeCategory10);
     }else{
-        let temp = d3.scaleLinear()
-                .domain(d3.extent(varData))
-                .range(['teal', 'purple']);
+        colorScale = d3.scaleSequential(
+                        d3.extent(varData),
+                        d3.interpolateViridis
+        )
+        // "inferno was an effective choice but it doesn't necessarily conform to
+        // dark is more bias"
+        // "aesthetic goals vs communication goals are supported by viridis"
+        // goal is for them to understand higher counts quickly within the representation
+        // of my data and viridis highlights that, which makes it the most effective color
+        // scale
+        // let temp = d3.scaleLinear()
+        //         .domain(d3.extent(varData))
+        //         .range(['teal', 'purple']);
         // colorScale = function(num) {
         //     return d3.interpolateInferno(temp(num));
         // }
-        colorScale = temp;
+        // colorScale = temp;
     }
 }
 
